@@ -1,0 +1,25 @@
+doctype
+html
+	head
+		link(rel='stylesheet', href='/stylesheets/style.css')
+	body
+		h1 Search Results
+		form(method="POST" action="/add")
+			ul#searchresults
+				each book in books
+					li.searchresult
+						img(src="#{book.coverurl}")
+						p.title #{book.title}
+						p.author #{book.author}
+						p.group (#{book.group})
+						p.check 
+							input(type="checkbox" name="book" value="#{book.ASIN}")
+			p: button(type="submit") Add
+
+		form(method="POST" action="/search/#{(parseInt(page)+1)}")
+			input#id(type="hidden" name="author" value="#{query}")
+			p: button(type="submit") Next			
+
+		form(method="POST" action="/search/#{(parseInt(page)-1)}")
+			input#id(type="hidden" name="author" value="#{query}")
+			p: button(type="submit") Prev

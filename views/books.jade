@@ -1,0 +1,11 @@
+doctype
+html
+	head
+		link(rel='stylesheet', href='/stylesheets/style.css')
+	body
+		each list in lists
+			h1 #{list.title}
+			ul.booklist
+				each book in list["books"]
+					li.bookitem
+						img(src="#{book.coverurl}" alt="#{book.title} von")

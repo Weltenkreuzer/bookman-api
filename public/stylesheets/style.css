@@ -1,0 +1,62 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+ul#searchresults {
+	list-style-type: none;
+}
+
+ul li.searchresult {
+	float:left;
+	width: 300px;
+	padding-bottom: 25px;
+	margin: 0 20px;
+}
+
+ul li.searchresult img {
+	width: 250px;
+	margin: 0 25px;
+}
+
+ul li.searchresult p {text-align: center;}
+
+ul li.searchresult p.title {font-weight: bold; margin-bottom: 0;}
+
+ul li.searchresult p.author {margin-bottom: 5;margin-top: 0;}
+
+ul li.searchresult p.group {}
+
+
+ul#addbooks {
+	list-style-type: none;
+}
+
+ul li.addbook {
+	padding: 25px;
+	margin: 0 20px;
+	clear:both;
+}
+
+ul li.addbook img {
+	float:left;
+	width: 250px;
+	margin: 0 25px;
+}
+
+ul li.addbook input, ul li.addbook textarea {
+	border: 1px solid #DDDDDD;
+	padding:2px 5px;
+}
+
+ul li.addbook p {
+	margin: 5px 0;
+}
+
+ul.booklist {list-style-type: none; margin: 0;padding: 0;}
+ul.booklist li.bookitem {padding: 0;}
+ul.booklist li.bookitem img {width:150px; height:235px; float: left; margin: 0 15px 15px 15px;}

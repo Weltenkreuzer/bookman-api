@@ -1,0 +1,23 @@
+doctype
+html
+	head
+		link(rel='stylesheet', href='/stylesheets/style.css')
+	body
+		h1 Search Results
+		form(method="POST" action="/save")
+			ul#addbooks
+				each book, index in books
+					li.addbook
+						img(src="#{book.coverurl}")
+						p: input(type="text" value="#{book.title}" name="book["+index+"][title]" size="80")
+						p
+							input(type="text" value="" name="book["+index+"][series]" size="69")
+							input(type="text" value="" name="book["+index+"][number]" size="3")
+						p: input(type="text" value="#{book.author}" name="book["+index+"][author]" size="80")
+						input(type="hidden" value="#{book.group}" name="book["+index+"][group]")
+						input(type="hidden" value="#{book.ASIN}" name="book["+index+"][ASIN]")
+						input(type="hidden" value="#{book.ISBN}" name="book["+index+"][ISBN]")
+						input(type="hidden" value="#{book.coverurl}" name="book["+index+"][coverurl]")
+						p: textarea(name="book["+index+"][review]" cols="62" rows="10") #{book.review}	
+
+			p: button(type="submit") Save
