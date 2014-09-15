@@ -30,21 +30,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 mongoose.connect('mongodb://localhost/litobserver');
 
-var BookSchema = new mongoose.Schema({
-	id: String,
-	ASIN: String,
-	ISBN: String,
-	title: String,
-	author: String,
-	authors: [{firstName: String, lastName: String}],
-	group: String, 
-	coverurl: String,
-	series: String,
-	number: Number,
-	review: String,
-	pubdate: Date,
-}),
-	Books = mongoose.model('Book', BookSchema);
+var BookSchema = require('./schema.js').schemaBook(mongoose);
+var Books = mongoose.model('Book', BookSchema);
 
 // development only
 if ('development' == app.get('env')) {
@@ -107,10 +94,10 @@ app.get('/demo', function(req, res){
 		}, 
 		function(results) { // you can add a second parameter here to examine the raw xml response
 
-			var books = new Array();
-			results = results["ItemSearchResponse"]["Items"]
+			var books = [];
+			results = results.ItemSearchResponse.Items;
 			for (i = 0; i < results.length; ++i) {
-    			books.push(results[i]["Item"]);
+    			books.push(results[i].Item);
 			}
     	
     		res.send(books);
@@ -119,12 +106,11 @@ app.get('/demo', function(req, res){
 });
 
 app.post('/add', function(req,res){
-	b=req.body
+	b=req.body;
 	if( typeof b.book === 'string' ) {
     	b.book = [ b.book ];
 	}
-	itemList = b.book.join(",")
-
+	itemList = b.book.join(",");
 	opHelper.execute('ItemLookup', 
 		{
   			'ItemId': itemList,
@@ -132,19 +118,19 @@ app.post('/add', function(req,res){
 		}, 
 		function(results) { // you can add a second parameter here to examine the raw xml response
 
-			var books = new Array();
-			results = results["ItemLookupResponse"]["Items"][0]["Item"]
+			var books = [];
+			results = results.ItemLookupResponse.Items[0].Item;
 			for (i = 0; i < results.length; ++i) {
 				//if (results[i]["ItemAttributes"][0]["ProductGroup"] == "Book") {
 	    			books.push(
 	    				new Books({
-							ASIN: results[i]["ASIN"],
-							ISBN: results[i]["ItemAttributes"][0]["ISBN"],
-							title: results[i]["ItemAttributes"][0]["Title"],
-							author: results[i]["ItemAttributes"][0]["Author"],
-							group:  results[i]["ItemAttributes"][0]["ProductGroup"],
-							coverurl: results[i]["LargeImage"] ? results[i]["LargeImage"][0]["URL"] : "", 
-							review: results[i]["EditorialReviews"] ? results[i]["EditorialReviews"][0]["EditorialReview"][0]["Content"] : ""
+							ASIN: results[i].ASIN,
+							ISBN: results[i].ItemAttributes[0].ISBN,
+							title: results[i].ItemAttributes[0].Title,
+							author: results[i].ItemAttributes[0].Author,
+							group:  results[i].ItemAttributes[0].ProductGroup,
+							coverurl: results[i].LargeImage ? results[i].LargeImage[0].URL : "", 
+							review: results[i].EditorialReviews ? results[i].EditorialReviews[0].EditorialReview[0].Content : ""
 	    				})	
 	    			);
 	    		//}
@@ -153,43 +139,43 @@ app.post('/add', function(req,res){
     		//res.send(results)
     		res.render("azsearch_add.jade", {books: books});
 		});
-})
+});
 
 app.post('/save', function(req,res){
-	b=req.body
-	books=[]
+	b=req.body;
+	books=[];
 
 	for (i = 0; i < b.book.length; ++i) {
 
 		// Construct Author-Object
-		authorsString = b.book[i]["author"].split(", ");
-		authors = []
+		authorsString = b.book[i].author.split(", ");
+		authors = [];
 		if( typeof authorsString === 'string' ) {
     		authorsString = [ authorsString ];
 		}
 		authorsString.forEach(function(author){
 			authorString = author.split("#");
-			authors = authors + [{firstName: authorString[0], lastName: authorString[1]}]
+			authors = authors + [{firstName: authorString[0], lastName: authorString[1]}];
 		});
 
 
 		cur_book = new Books({
-				ASIN: b.book[i]["ASIN"],
-				ISBN: b.book[i]["ISBN"],
-				title: b.book[i]["title"],
+				ASIN: b.book[i].ASIN,
+				ISBN: b.book[i].ISBN,
+				title: b.book[i].title,
 				authors: authors,
-				series: b.book[i]["series"],
-				number: b.book[i]["number"],
-				group:  b.book[i]["group"],
-				coverurl: b.book[i]["coverurl"],
-				review: b.book[i]["review"]
-			})
-		books.push(cur_book)
-		cur_book.save()
+				series: b.book[i].series,
+				number: b.book[i].number,
+				group:  b.book[i].group,
+				coverurl: b.book[i].coverurl,
+				review: b.book[i].review
+			});
+		books.push(cur_book);
+		cur_book.save();
 	}
 
-	res.redirect("/")
-})
+	res.redirect("/");
+});
 
 
 app.get('/demo2', function(req, res){
@@ -201,8 +187,8 @@ app.get('/demo2', function(req, res){
 		}, 
 		function(results) { // you can add a second parameter here to examine the raw xml response
 
-			var books = new Array();
-			results = results["ItemSearchResponse"]["Items"]
+			var books = [];
+			results = results.ItemSearchResponse.Items;
 			for (i = 0; i < results.length; ++i) {
     			books.push(results[i]);
 			}
